@@ -85,6 +85,7 @@ Update:
 	finish=res/finish.png	
 	finish1=res/finish1.png	
 	arrowleft=res/arrowleft.png
+	arrowleft2=res/arrowleft2.png
 	if (mapTitle = "3-5")
 	{
 		map=res/3_5.png
@@ -108,11 +109,12 @@ Update:
 	}
 	
 	;deep 20 and search in game window only, try again each 50ms in 1000ms if not found
-	searchCondition=o20 r%winId% w1000,100
-	checkAvailableCondition=%searchCondition% n0
+	searchCondition=o24 r%winId% w1000,100 n2
+	checkAvailableCondition=o24 r%winId% w1000,100 n0
 	;HANDLE CLICK	
 	if(autoType = "Map"){
-		if(autoState = "Start"){
+		if(autoState = "Start"){		
+			GuiControl,, stepValue, Checking current state
 			;BATTLE
 			clickState=% FindClick(battle, checkAvailableCondition)		
 			if (clickState != "0")
@@ -129,7 +131,6 @@ Update:
 			}
 			else{
 				clickState =% FindClick(finish1, checkAvailableCondition)
-				GuiControl,, stepValue, finish check 2
 				if (clickState != "0")
 				{
 					autoState := "Battle"
@@ -182,38 +183,45 @@ Update:
 				autoState := "ReEnterBattle"
 				return
 			}
+			clickState =% FindClick(arrowleft2, checkAvailableCondition)
+			if (clickState != "0")
+			{			
+				autoState := "ReEnterBattle"
+				return
+			}
 			;battle by default
 			; autoState := "Battle"
 		}
 		else if(autoState = "Battle"){
 			clickState =% FindClick(inventoryfull, checkAvailableCondition)
-			GuiControl,, stepValue, Inventory check
+			GuiControl,, stepValue, Battle - Checking Inventory
 			if (clickState != "0")
 			{			
-				GuiControl,, stepValue, Inventory full
+				GuiControl,, stepValue, Battle - Inventory full
 				;loop and full confirm is same
 				clickState =% FindClick(confirm, searchCondition)
 				if (clickState != "0")
 				{
+					GuiControl,, stepValue, Confirm Inventory
 					autoState := "BattleToMainMenu"
 					return
 				}
 			}
 			;check if loop finish dialog
 			clickState =% FindClick(finish, checkAvailableCondition)
-			GuiControl,, stepValue, finish check
+			GuiControl,, stepValue, Battle - Checking Finish
 			if (clickState != "0")
 			{
 				FindClick(confirm, searchCondition)
-				GuiControl,, stepValue, Confirm Finish
+				GuiControl,, stepValue, Battle - Confirm Finish
 			}
 			else{
 				clickState =% FindClick(finish1, checkAvailableCondition)
-				GuiControl,, stepValue, finish check 2
+				GuiControl,, stepValue, Battle - Checking Finish 2
 				if (clickState != "0")
 				{
 					FindClick(confirm, searchCondition)
-					GuiControl,, stepValue, Confirm Finish
+					GuiControl,, stepValue, Battle - Confirm Finish
 				}
 			}
 			clickState=% FindClick(battle, checkAvailableCondition)
@@ -233,10 +241,10 @@ Update:
 							return
 						}
 					}
-					GuiControl,, stepValue, Battle
+					GuiControl,, stepValue, Battle - Enter Battle
 				} 
 				else {
-					GuiControl,, stepValue, Looping
+					GuiControl,, stepValue, Battle - Looping
 				}
 			}
 			else
@@ -250,7 +258,7 @@ Update:
 						clickState =% FindClick(nobaozi, searchCondition)
 						if (clickState != "0")
 						{
-							GuiControl,, stepValue, NotEnoughBaozi
+							GuiControl,, stepValue, Battle - NotEnoughBaozi
 							autoState := "Baozi"
 							return
 						}
@@ -264,18 +272,19 @@ Update:
 			clickState =% FindClick(resume, searchCondition)
 			if (clickState != "0")
 			{
-				GuiControl,, stepValue, Resume	
+				GuiControl,, stepValue, Ingame - Resume	
 			}
 			;auto click shield skill
 			clickState =% FindClick(shield, searchCondition)
 			if (clickState != "0")
 			{
-				GuiControl,, stepValue, Shield	
+				GuiControl,, stepValue, Ingame - Shield	
 			}
 			;click confirm at end of battle
 			clickState =% FindClick(endconfirm, searchCondition)
 			if (clickState != "0")
-			{
+			{				
+				GuiControl,, stepValue, Ingame - End	
 				autoState := "Battle"
 				return
 			}
@@ -297,7 +306,7 @@ Update:
 			clickState =% FindClick(usebaozi, searchCondition)
 			if (clickState != "0")
 			{
-				GuiControl,, stepValue, BuyBaozi
+				GuiControl,, stepValue, Battle - BuyBaozi
 				autoState := "Battle"
 			}
 		}
@@ -349,9 +358,20 @@ Update:
 				autoState := "Battle"
 			} else
 			{
-				FindClick(arrowleft, searchCondition)
-				Sleep, 300
-				GuiControl,, stepValue, Click arrow to find map
+				clickState =% FindClick(arrowleft, searchCondition)
+				if (clickState != "0")
+				{
+					GuiControl,, stepValue, ReEnterBattle - Click left arrow
+				}
+				else
+				{
+					clickState =% FindClick(arrowleft2, searchCondition)
+					if (clickState != "0")
+					{
+						GuiControl,, stepValue, ReEnterBattle - Click left arrow 2
+					}
+				}
+				
 			}
 		}
 	}
@@ -450,7 +470,7 @@ FindClick(ImageFile="", Options="", ByRef FoundX="", ByRef FoundY="") ; updated 
 				, x := 0,                 x_user := "Abs"           ; X Offset
 				, y := 0,                 y_user := "Abs"           ; Y Offset
 				, n := 1,                 n_user := 0               ; Number of Clicks (No Click)
-				, e := "",                e_user := 0.85            ; Find Every Image
+				, e := "",                e_user := ""            ; Find Every Image
 				, w := "",                w_user := "0,100"         ; Wait Until Image Is Found
 				, dx := "",               dx_user := "StartAt=#"    ; Diagnostic Mode
 				, k := "{Click}",         k_user := "{RButton}"     ; Keystroke(s)
@@ -461,7 +481,7 @@ FindClick(ImageFile="", Options="", ByRef FoundX="", ByRef FoundY="") ; updated 
 				, Sleep := 100,            Sleep_user := 200           ; Sleep Between Clicks
 				, t := "",                t_user := "10%"           ; Image Tracking
 				, Silent := False,        Silent_user := True       ; No Dialogs
-				, Center := True,         Center_user := False      ; Start at Center of Image
+				, Center := True,         Center_user := True      ; Start at Center of Image
 				, Delim := "`n",          Delim_user := A_Tab       ; Delimiter for Multiple Images
 				, f := "x,y",             f_user := "x y n"         ; Format of Output String
 				, Func := "",             Func_user := ""           ; Function Callout
