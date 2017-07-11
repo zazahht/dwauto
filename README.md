@@ -2,9 +2,15 @@
 Autoscript for Dynasty Warrior
 
 # Language
-Auto Hot Key - Base on search image and auto click functions
+AutoHotKey - Base on FindClick https://github.com/berban/FindClick
 
 # How to use
+Set your Nox resolution to 654 x 404
+Set your game quanlity to SD
 Press Ctrl Shift A to choose Game Window
-Choose Map and other options
-Click Start
+Choose Map to farm
+Choose Auto Refill - Yes to auto buy baozi
+Interval is the delay between checking
+
+# Note
+This auto click base on pre-defined images, the app window will always on top to find correct image position
