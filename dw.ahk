@@ -68,14 +68,18 @@ Update:
 	looping=res/looping.png
 	shield=res/shield.png
 	confirm=res/confirm.png
+	confirm2=res/confirm2.png
 	endconfirm=res/endconfirm.png
 	resume=res/resume.png
 	
 	inventoryfull=res/inventoryfull.png
 	back=res/back.png
 	inventory=res/inventory.png
+	inventory2=res/inventory2.png
+	inventory3=res/inventory3.png
 	multisell=res/multisell.png
 	quantity=res/quantity.png
+	quantity2=res/quantity2.png
 	campaign=res/campaign.png
 	campaign2=res/campaign2.png
 	chapter=res/peace.png
@@ -109,7 +113,7 @@ Update:
 	}
 	
 	;deep 20 and search in game window only, try again each 50ms in 1000ms if not found
-	searchCondition=o24 r%winId% w1000,100 n2
+	searchCondition=o24 r%winId% w1000,100 n1
 	checkAvailableCondition=o24 r%winId% w1000,100 n0
 	;HANDLE CLICK	
 	if(autoType = "Map"){
@@ -192,82 +196,7 @@ Update:
 			;battle by default
 			; autoState := "Battle"
 		}
-		else if(autoState = "Battle"){
-			clickState =% FindClick(inventoryfull, checkAvailableCondition)
-			GuiControl,, stepValue, Battle - Checking Inventory
-			if (clickState != "0")
-			{			
-				GuiControl,, stepValue, Battle - Inventory full
-				;loop and full confirm is same
-				clickState =% FindClick(confirm, searchCondition)
-				if (clickState != "0")
-				{
-					GuiControl,, stepValue, Confirm Inventory
-					autoState := "BattleToMainMenu"
-					return
-				}
-			}
-			;check if loop finish dialog
-			clickState =% FindClick(finish, checkAvailableCondition)
-			GuiControl,, stepValue, Battle - Checking Finish
-			if (clickState != "0")
-			{
-				FindClick(confirm, searchCondition)
-				GuiControl,, stepValue, Battle - Confirm Finish
-			}
-			else{
-				clickState =% FindClick(finish1, checkAvailableCondition)
-				GuiControl,, stepValue, Battle - Checking Finish 2
-				if (clickState != "0")
-				{
-					FindClick(confirm, searchCondition)
-					GuiControl,, stepValue, Battle - Confirm Finish
-				}
-			}
-			clickState=% FindClick(battle, checkAvailableCondition)
-			if (clickState != "0")
-			{
-				clickState =% FindClick(looping, checkAvailableCondition)
-				if (clickState = "0")
-				{
-					clickState =% FindClick(battle, searchCondition)
-					if (clickState != "0")
-					{
-						Sleep, 200
-						clickState =% FindClick(inventoryfull, checkAvailableCondition)
-						if (clickState = "0")
-						{
-							autoState := "Ingame"
-							return
-						}
-					}
-					GuiControl,, stepValue, Battle - Enter Battle
-				} 
-				else {
-					GuiControl,, stepValue, Battle - Looping
-				}
-			}
-			else
-			{
-				if(buyBaozi = "Yes")
-				{
-					clickState =% FindClick(looping, checkAvailableCondition)
-					if (clickState = "0")
-					{
-						Sleep, 200
-						clickState =% FindClick(nobaozi, searchCondition)
-						if (clickState != "0")
-						{
-							GuiControl,, stepValue, Battle - NotEnoughBaozi
-							autoState := "Baozi"
-							return
-						}
-					}
-				}
-			}
-		}
-		else if(autoState = "Ingame"){
-			GuiControl,, stepValue, Ingame
+		else if(autoState = "Battle"){		
 			;avoid game pause when auto
 			clickState =% FindClick(resume, searchCondition)
 			if (clickState != "0")
@@ -280,55 +209,160 @@ Update:
 			{
 				GuiControl,, stepValue, Ingame - Shield	
 			}
-			;click confirm at end of battle
-			clickState =% FindClick(endconfirm, searchCondition)
+			clickState =% FindClick(inventoryfull, checkAvailableCondition)
+			GuiControl,, stepValue, Battle - Checking Inventory
 			if (clickState != "0")
-			{				
-				GuiControl,, stepValue, Ingame - End	
-				autoState := "Battle"
-				return
+			{			
+				GuiControl,, stepValue, Battle - Inventory full
+				;loop and full confirm is same
+				clickState =% FindClick(confirm, searchCondition)
+				if (clickState != "0")
+				{
+					GuiControl,, stepValue, Confirm Inventory
+					autoState := "BattleToMainMenu"
+					return
+				}else{
+					clickState =% FindClick(confirm2, searchCondition)
+					if (clickState != "0")
+					{
+						GuiControl,, stepValue, Confirm Inventory
+						autoState := "BattleToMainMenu"
+						return
+					}
+				}
+			}
+			;check if loop finish dialog
+			clickState =% FindClick(finish, checkAvailableCondition)
+			GuiControl,, stepValue, Battle - Checking Finish
+			if (clickState != "0")
+			{
+				clickState =% FindClick(confirm, searchCondition)
+				if (clickState != "0")
+				{
+					GuiControl,, stepValue, Battle - Confirm Finish
+				}else
+				{
+					clickState =% FindClick(confirm2, searchCondition)
+					if (clickState != "0")
+					{
+						GuiControl,, stepValue, Battle - Click Confirm
+					}
+				}
+			}
+			else{
+				clickState =% FindClick(finish1, checkAvailableCondition)
+				GuiControl,, stepValue, Battle - Checking Finish 2
+				if (clickState != "0")
+				{
+					GuiControl,, stepValue, Battle - Confirm Finish
+					clickState =% FindClick(confirm, searchCondition)
+					if (clickState != "0")
+					{
+						GuiControl,, stepValue, Battle - Click Confirm
+					}else
+					{
+						clickState =% FindClick(confirm2, searchCondition)
+						if (clickState != "0")
+						{
+							GuiControl,, stepValue, Battle - Click Confirm
+						}
+					}
+				}
 			}
 			clickState=% FindClick(battle, checkAvailableCondition)
 			if (clickState != "0")
 			{
-				autoState := "Battle"
-				return
+				clickState =% FindClick(looping, checkAvailableCondition)
+				if (clickState = "0")
+				{
+					clickState =% FindClick(battle, searchCondition)
+					GuiControl,, stepValue, Battle - Enter Battle
+				}
 			}
-			clickState =% FindClick(nobaozi, checkAvailableCondition)
-			if (clickState != "0")
+			else
 			{
-				autoState := "Battle"
-				return
+				if(buyBaozi = "Yes")
+				{
+					clickState =% FindClick(looping, checkAvailableCondition)
+					if (clickState = "0")
+					{
+						Sleep, 200
+						clickState =% FindClick(nobaozi, checkAvailableCondition)
+						clicked := 0
+						if (clickState!="0")
+						{
+							autoState := "Baozi"
+						}
+					}
+				}
 			}
 		}
 		else if(autoState = "Baozi")
 		{
-			clickState =% FindClick(usebaozi, searchCondition)
+			GuiControl,, stepValue, Battle - BuyBaozi
+			clickState =% FindClick(nobaozi, searchCondition)
 			if (clickState != "0")
 			{
-				GuiControl,, stepValue, Battle - BuyBaozi
+				Sleep, 400
+				clickState =% FindClick(usebaozi, searchCondition)
+				while (clickState="0")
+				{
+					FindClick(nobaozi, searchCondition)
+					Sleep, 400
+					clickState =% FindClick(usebaozi, searchCondition)							
+				}				
 				autoState := "Battle"
 			}
 		}
 		else if(autoState = "BattleToMainMenu")
 		{
-			GuiControl,, stepValue, BattleToMainMenu
-			Sleep, 200
-			FindClick(back, searchCondition)
-			clickState =% FindClick(inventory, searchCondition)
-			if (clickState != "0")
-			{
-				autoState := "Inventory"
-			}		
+			GuiControl,, stepValue, BattleToMainMenu	
+			clickState =% FindClick(back, searchCondition)
+			Sleep, 800	
+			if (clickState = "0"){
+				clickState =% FindClick(inventory, searchCondition)
+				if (clickState != "0")
+				{
+					GuiControl,, stepValue, Inventory
+					autoState := "Inventory"
+				}else{
+					GuiControl,, stepValue, Checking Inventory 2
+					clickState =% FindClick(inventory2, searchCondition)
+					if (clickState != "0")
+					{
+						GuiControl,, stepValue, Inventory 2
+						autoState := "Inventory"
+					}else{
+						clickState =% FindClick(inventory3, searchCondition)
+						if (clickState != "0")
+						{
+							GuiControl,, stepValue, Inventory 3
+							autoState := "Inventory"
+						}
+					}
+				}
+			}
+			
 		}
 		else if(autoState = "Inventory")
-		{
-			GuiControl,, stepValue, Inventory
-			FindClick(multisell, searchCondition)
-			clickState =% FindClick(quantity, searchCondition)
-			if (clickState != "0")
-			{
-				autoState := "InventoryToMainMenu"
+		{	
+			GuiControl,, stepValue, selling
+			clickState =% FindClick(multisell, searchCondition)
+			if (clickState != "0"){
+				Sleep, 500
+				clickState =% FindClick(quantity, searchCondition)
+				if (clickState != "0")
+				{
+					GuiControl,, stepValue, quantity
+					autoState := "InventoryToMainMenu"
+				}else{
+					clickState =% FindClick(quantity2, searchCondition)
+					if (clickState != "0")
+					{
+						GuiControl,, stepValue, quantity2
+						autoState := "InventoryToMainMenu"
+					}
+				}
 			}
 		}
 		else if(autoState = "InventoryToMainMenu")
