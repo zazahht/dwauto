@@ -68,9 +68,11 @@ Update:
 	back=res_672/back.png
 	back_hide=res_672/back_hide.png
 	confirm=res_672/confirm.png
+	confirm2=res_672/confirm2.png
 	use=res_672/use.png
 	multisell=res_672/multisell.png
 	quantity=res_672/quantity.png
+	quantity2=res_672/quantity2.png
 	;battle
 	shield=res_672/shield.png
 	resume=res_672/resume.png
@@ -88,6 +90,8 @@ Update:
 			checkResult =% FindClick(confirm, searchCondition)
 			if(checkResult!="0"){
 				Sleep, 200
+			}else{
+				FindClick(confirm2, searchCondition)
 			}
 			checkResult =% FindClick(battleloop, checkAvailableCondition)
 			if(checkResult!="0"){
@@ -144,17 +148,32 @@ Update:
 			GuiControl,, stepValue, SellItem
 			checkResult =% FindClick(multisell, searchCondition)
 			if(checkResult!="0"){
+				GuiControl,, stepValue, Quantity 1
 				Sleep, 200
 			}
 			checkResult =% FindClick(quantity, searchCondition)
 			if(checkResult!="0"){
-				Sleep, 1000
+				Sleep, 3000
 				checkResult =% FindClick(quantity, checkAvailableCondition)
 				if(checkResult = "0"){
 					checkResult =% FindClick(back, searchCondition)
 					if(checkResult!="0"){
 						autoState := "MainMenu"
 						return
+					}
+				}
+			}else{
+				GuiControl,, stepValue, Quantity 2
+				checkResult =% FindClick(quantity2, searchCondition)
+				if(checkResult != "0"){
+					Sleep, 3000
+					checkResult =% FindClick(quantity2, checkAvailableCondition)
+					if(checkResult = "0"){
+						checkResult =% FindClick(back, searchCondition)
+						if(checkResult!="0"){
+							autoState := "MainMenu"
+							return
+						}
 					}
 				}
 			}
@@ -190,7 +209,7 @@ return
 
 startAuto:
 {
-	autoState:="PrepareBattle"
+	autoState:="SellItem"
 	SoundBeep
 	GuiControl,, stepValue, START
 	SetTimer, Update, % interval
