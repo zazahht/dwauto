@@ -209,7 +209,7 @@ return
 
 startAuto:
 {
-	autoState:="SellItem"
+	autoState:="PrepareBattle"
 	SoundBeep
 	GuiControl,, stepValue, START
 	SetTimer, Update, % interval
