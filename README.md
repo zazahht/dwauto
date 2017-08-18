@@ -5,7 +5,7 @@ Autoscript for Dynasty Warrior
 AutoHotKey - Base on FindClick https://github.com/berban/FindClick
 
 # How to use
-Set your Nox resolution to 654 x 404
+Set your Nox resolution to 672 x 408
 
 Set your game quanlity to SD
 
@@ -14,8 +14,6 @@ Turn off virtual key
 Press Ctrl Shift A to choose Game Window
 
 Choose Map to farm
-
-Choose Auto Refill - Yes to auto buy baozi
 
 Interval is the delay between checking
 
